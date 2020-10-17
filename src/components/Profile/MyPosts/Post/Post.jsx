@@ -8,7 +8,7 @@ const Post = (props) => {
             <img src='https://www.screengeek.net/wp-content/uploads/2018/11/avatar-movie.jpg'/>
             {props.message}
             <div>
-                <span>Like</span>
+                <span>Like</span> {props.likesCount}
             </div>
         </div>
 

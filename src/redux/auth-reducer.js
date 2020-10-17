@@ -1,44 +1,52 @@
-const ADD_MESSAGE = 'ADD-MESSAGE';
-const UPDATE_NEW_MESSAGE_TEXT = 'UPDATE-NEW-MESSAGE-TEXT';
+import {authAPI} from "../api/api";
+import {stopSubmit} from "redux-form";
+
+const SET_USER_DATA = 'samurai-network/auth/SET_USER_DATA';
 
 let initialState = {
-    dialogs: [
-        {id: 1, name: 'Dimych'},
-        {id: 2, name: 'Andrey'},
-        {id: 3, name: 'Sveta'},
-        {id: 4, name: 'Sasha'},
-        {id: 5, name: 'Viktor'},
-        {id: 6, name: 'Valera'}
-    ],
-    messages: [
-        {id: 1, message: 'Hi'},
-        {id: 2, message: 'How is your it-kamasutra?'},
-        {id: 3, message: 'Yo'},
-        {id: 4, message: 'Yo'},
-        {id: 5, message: 'Yo'}
-    ],
-    newMessageText: 'Hey ,im coder'
+    userId: null,
+    email: null,
+    login: null,
+    isAuth: false
 
 };
-const dialogReducer = (state = initialState, action) => {
+const authReducer = (state = initialState, action) => {
     switch (action.type) {
-        case UPDATE_NEW_MESSAGE_TEXT:
-            return  {
+        case  SET_USER_DATA:
+            return {
                 ...state,
-                newMessageText: action.body
-            };
-        case ADD_MESSAGE:
-            let body = state.newMessageText;
-            return  {
-                ...state,
-                newMessageText: '',
-                messages: [...state.messages, {id: 6, message: body}]
-            };
+                ...action.payload
+            }
         default:
             return state;
     }
 }
-export const addMessageTextCreator = () => ({type: ADD_MESSAGE})
-export const updateNewMessageTextCreator = (body) =>
-    ({type: UPDATE_NEW_MESSAGE_TEXT, body: body});
-export default dialogReducer;
+export const setAuthUserData = (userId, email, login, isAuth) => ({
+    type: SET_USER_DATA, payload:
+        {userId, email, login, isAuth}
+})
+export const getAuthUserData = () => async (dispatch) => {
+    let response = await authAPI.me()
+
+    if (response.data.resultCode === 0) {
+        let {id, login, email} = response.data.data;
+        dispatch(setAuthUserData(id, email, login, true));
+    }
+}
+export const login = (email, password, rememberMe) => async (dispatch) => {
+    let response = await authAPI.login(email, password, rememberMe);
+    if (response.data.resultCode === 0) {
+        dispatch(getAuthUserData())
+    } else {
+        let message = response.data.messages.length > 0 ? response.data.messages[0] : "Some error";
+        dispatch(stopSubmit('login', {_error: message}));
+    }
+}
+export const logout = () => async (dispatch) => {
+    let response = await authAPI.logout();
+    if (response.data.resultCode === 0) {
+        dispatch(setAuthUserData(null, null, null, null));
+    }
+}
+
+export default authReducer;

@@ -1,10 +1,21 @@
-import React from "react";
-
-const Dialogs = (props) => {
-    return (
-        <div>
-            Dialogs
-        </div>
-    )
+.dialogs {
+    display: grid;
+    grid-template-columns: 2fr 10fr;
 }
-export default Dialogs;
+
+.dialogsItems {
+    padding: 10px;
+}
+
+.dialogsItems .active {
+    color: gold;
+}
+
+.messages {
+    padding: 10px;
+
+}
+
+.messages.message {
+
+}

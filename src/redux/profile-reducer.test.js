@@ -1,70 +1,57 @@
-import {profileAPI, usersAPI} from "../api/api";
+import React from "react";
+import profileReducer, {addPostActionCreator, deletePost} from "./profile-reducer";
 
-const ADD_POST = 'ADD-POST';
-const SET_USER_PROFILE = 'SET_USER_PROFILE'
-const SET_STATUS = 'SET_STATUS'
-
-let initialState = {
+let state = {
     posts: [
         {id: 1, message: 'Hi,howe are you?', likesCount: 12},
         {id: 2, message: 'It\'s my first post!', likesCount: 11},
         {id: 3, message: 'Heeeey', likesCount: 25},
-        {id: 4, message: 'Fun', likesCount: 2},
-    ],
-    profile: null,
-    status: ""
-};
-
-const profileReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case  ADD_POST: {
-            let newPost = {
-                id: 5,
-                message: action.newPostText,
-                likesCount: 0
-            };
-            return {
-                ...state,
-                posts: [...state.posts, newPost],
-                newPostText: ''
-            }
-        }
-        case SET_STATUS: {
-            return {
-                ...state,
-                status: action.status
-            }
-        }
-        case SET_USER_PROFILE: {
-            return {...state,profile: action.profile}
-        }
-
-        default:
-            return state;
-    }
-}
-export const addPostActionCreator = (newPostText) => ({type: ADD_POST,newPostText})
-export const setUserProfile = (profile) => ({type:SET_USER_PROFILE,profile})
-export const setStatus = (status) => ({type:SET_STATUS,status})
-
-export const getUserProfile = (userId) =>(dispatch)=>{
-     usersAPI.getProfile(userId).then(response => {
-        dispatch(setUserProfile(response.data));
-    });
-}
-export const getStatus = (userId) =>(dispatch)=>{
-    profileAPI.getStatus(userId)
-        .then(response => {
-        dispatch(setStatus(response.data));
-    });
-}
-export const updateStatus = (status) => (dispatch) => {
-    profileAPI.updateStatus(status)
-        .then(response => {
-            if (response.data.resultCode === 0) {
-                dispatch(updateStatus(status));
-            }
-        });
+        {id: 4, message: 'Fun', likesCount: 2}
+    ]
 }
 
-export default profileReducer;
+it('length of posts should incremented', () => {
+    //1. test data
+    let action = addPostActionCreator('Antonov is programmer: true');
+
+    // 2. action
+    let newState = profileReducer(state, action);
+
+    //3. expectation
+    expect(newState.posts.length).toBe(5);
+});
+
+it('message  of  new posts should  be `correct`', () => {
+    //1. test data
+    let action = addPostActionCreator('Antonov is programmer: true');
+
+
+    // 2. action
+    let newState = profileReducer(state, action);
+
+    //3. expectation
+    expect(newState.posts[4].message).toBe('Antonov is programmer: true');
+});
+
+it('after deleting  length  of  posts should  be decrement', () => {
+    //1. test data
+    let action = deletePost(1);
+
+
+    // 2. action
+    let newState = profileReducer(state, action);
+
+    //3. expectation
+    expect(newState.posts.length).toBe(3)
+});
+it('after deleting  length  should be decrement if id is incorrect', () => {
+    //1. test data
+    let action = deletePost(1000);
+
+
+    // 2. action
+    let newState = profileReducer(state, action);
+
+    //3. expectation
+    expect(newState.posts.length).toBe(4)
+});

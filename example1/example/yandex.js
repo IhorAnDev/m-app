@@ -1,4 +1,4 @@
 let  openYandex = () => {
     //yandex map
 }
-openYandex();
+export default openYandex();

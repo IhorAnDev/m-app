@@ -1,11 +1,11 @@
 import React from "react";
-import s from './Dialogs.module.css'
+import s from './News.module.css'
 
-const Dialogs = (props) => {
+const News = (props) => {
     return (
         <div>
-            Dialogs
+            News
         </div>
     )
 }
-export default Dialogs;
+export default News;

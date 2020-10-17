@@ -3,7 +3,6 @@ import dialogReducer from "./dialog-reducer";
 import sidebarReducer from "./sidebar-reducer";
 
 
-
 let store = {
     _state: {
 

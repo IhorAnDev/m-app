@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./users.module.css";
+import styles from "./Paginator.module.css";
 
 let Paginator = (props) => {
     let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize)

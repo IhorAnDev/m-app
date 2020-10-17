@@ -1,9 +1,6 @@
-.content {
-    grid-area: c;
-    background-color: cadetblue;
+.postsBlock{
+    padding: 10px;
 }
-
-
-.item {
-color: darkmagenta;
+.posts {
+    margin-top: 10px;
 }
